@@ -152,14 +152,12 @@ const Workspace = () => {
               />
             ))}
         </SortableContext>
-        {data[selectedBoardIndex] && (
-          <button
+        <button
             className="w-72 shrink-0 self-start rounded-md bg-lines-light p-3 text-heading-l text-medium-grey"
             onClick={addNewColumnHandler}
           >
             + Add New Column
           </button>
-        )}
       </div>
     </DndContext>
   );
