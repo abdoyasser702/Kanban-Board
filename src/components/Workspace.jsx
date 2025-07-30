@@ -18,7 +18,6 @@ import { produce } from "immer";
 
 const Workspace = () => {
   const { data, setData, selectedBoardIndex } = useContext(DataContext);
-  const columns = data[selectedBoardIndex]?.columns;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -27,6 +26,27 @@ const Workspace = () => {
       },
     }),
   );
+  const tasksIds = useMemo(() => {
+    let tasksIds = [];
+
+    if (!columns || columns.length === 0) return tasksIds;
+    for (let column of columns) {
+      const taskList = column?.tasks ?? [];
+      tasksIds = [...tasksIds, ...taskList.map((task) => task.id)];
+    }
+
+    return tasksIds;
+  }, [columns]);
+  if (!data[selectedBoardIndex])
+    return (
+      <div className="p-6">
+        <p className="text-heading-l text-medium-grey">
+          No boards found. Please create one.
+        </p>
+      </div>
+    );
+
+  var columns = data[selectedBoardIndex]?.columns;
   const createNewColumn = (num) => ({
     id: Date.now(),
     title: `New Column ${num}`,
@@ -48,17 +68,7 @@ const Workspace = () => {
       // };
     });
   };
-  const tasksIds = useMemo(() => {
-    let tasksIds = [];
 
-    if (!columns || columns.length === 0) return tasksIds;
-    for (let column of columns) {
-      const taskList = column?.tasks ?? [];
-      tasksIds = [...tasksIds, ...taskList.map((task) => task.id)];
-    }
-
-    return tasksIds;
-  }, [columns]);
   const onDragEndHandler = (event) => {
     const { active, over } = event;
     const activeId = active.id;
@@ -152,12 +162,14 @@ const Workspace = () => {
               />
             ))}
         </SortableContext>
-        <button
+        {data[selectedBoardIndex] && (
+          <button
             className="w-72 shrink-0 self-start rounded-md bg-lines-light p-3 text-heading-l text-medium-grey"
             onClick={addNewColumnHandler}
           >
             + Add New Column
           </button>
+        )}
       </div>
     </DndContext>
   );
