@@ -32,10 +32,11 @@ const AddNewBoard = ({
 
   const updateDataState = (boardName, newColumnsArray, setData, boardId) => {
     setData((prev) => {
+      const prevData = Array.isArray(prev) ? prev : [];
       let newData;
 
       if (boardId) {
-        newData = prev.map((item) => {
+        newData = prevData.map((item) => {
           if (item.id === boardId) {
             return {
               ...item,
@@ -47,14 +48,14 @@ const AddNewBoard = ({
         });
       } else {
         newData = [
-          ...prev,
+          ...prevData,
           {
             id: Date.now(),
             title: boardName,
             columns: newColumnsArray,
           },
         ];
-        setSelectedBoardIndex(prev.length);
+        setSelectedBoardIndex(prevData.length);
       }
       return newData;
     });
