@@ -6,6 +6,7 @@ Welcome to **Kanban Board** – a beautiful and interactive task management app 
 
 ## 🚀 Live Demo
 
+📌 Note: This version is currently designed for **desktop view only**
 🔗 [Check it out on Vercel](https://kanban-board-nu-coral.vercel.app/)  
 
 ---
