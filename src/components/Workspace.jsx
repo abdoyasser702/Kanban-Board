@@ -49,24 +49,23 @@ const Workspace = () => {
     });
   };
   const tasksIds = useMemo(() => {
-    let tasksIds = [];
+    if (!columns || !Array.isArray(columns)) return [];
 
-    if (!columns || columns.length === 0) return tasksIds;
-    for (let column of columns) {
-      const taskList = column?.tasks ?? [];
-      tasksIds = [...tasksIds, ...taskList.map((task) => task.id)];
-    }
-
-    return tasksIds;
+    return columns.reduce((acc, column) => {
+      const taskList = Array.isArray(column?.tasks) ? column.tasks : [];
+      return [...acc, ...taskList.map((task) => task?.id).filter(Boolean)];
+    }, []);
   }, [columns]);
+
   const onDragEndHandler = (event) => {
     const { active, over } = event;
     const activeId = active.id;
     const overId = over.id;
-    const overColumnId = over.data.current.columnId;
-    const activeColumnId = active.data.current.columnId;
+    const overColumnId = over.data.current?.columnId;
+    const activeColumnId = active.data.current?.columnId;
 
     if (activeId === overId) return;
+    if (!overColumnId || !activeColumnId) return;
 
     if (activeColumnId === overColumnId) {
       const newColumns = columns.map((column) => {
@@ -93,10 +92,14 @@ const Workspace = () => {
   };
   const onDragOverHandler = (event) => {
     const { active, over } = event;
+    if (!over) return;
+
     const activeId = active.id;
 
     const overColumnId = over?.data?.current?.columnId;
     const activeColumnId = active?.data?.current?.columnId;
+
+    if (!overColumnId || !activeColumnId) return;
 
     if (overColumnId && activeColumnId !== overColumnId) {
       const newColumns = columns.map((column) => {
